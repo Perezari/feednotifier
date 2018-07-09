@@ -1,3 +1,9 @@
+***************************************************************************************************
+Many users meet invalid URL message in popup window.
+Because some of feed engines don't accept custom user-agent such as "FeedNotifier/2.6 +http://www.feednotifier.com/".
+They don't send valid xml as response for feed url.
+***************************************************************************************************
+
 Feed Notifier is a Windows application that resides in the system tray and 
 displays pop-up notifications on your desktop when new items arrive in your 
 subscribed RSS or Atom feeds.
@@ -7,7 +13,7 @@ real-time feed notifications and leaves out all the other stuff that comes
 with most news readers.
 
 * Supports all common RSS and Atom web feed protocols.
-* Clean look and feel, doesn’t get in your way.
+* Clean look and feel, doesnâ€™t get in your way.
 * Configurable polling interval for each feed.
 * Configurable popup duration.
 * Configurable popup size, position and transparency.
