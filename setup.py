@@ -90,6 +90,8 @@ setup(
             'POWRPROF.dll',
             'Secur32.dll',
             'SHFOLDER.dll',
+            'crypt32.dll',
+            'mpr.dll'
         ],
     }},
     windows = [{

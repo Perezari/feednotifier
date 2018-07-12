@@ -4,3 +4,4 @@ feeds.dat
 log.txt
 settings.dat
 .idea
+*.pyc

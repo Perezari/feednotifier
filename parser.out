@@ -1,0 +1,392 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> filter
+Rule 1     filter -> expression
+Rule 2     expression -> rule
+Rule 3     expression -> expression AND expression
+Rule 4     expression -> expression OR expression
+Rule 5     expression -> NOT expression
+Rule 6     expression -> LPAREN expression RPAREN
+Rule 7     rule -> type qualifier WORD
+Rule 8     type -> PLUS
+Rule 9     type -> MINUS
+Rule 10    type -> empty
+Rule 11    qualifier -> TITLE
+Rule 12    qualifier -> LINK
+Rule 13    qualifier -> AUTHOR
+Rule 14    qualifier -> CONTENT
+Rule 15    qualifier -> empty
+Rule 16    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 3
+AUTHOR               : 13
+CONTENT              : 14
+LINK                 : 12
+LPAREN               : 6
+MINUS                : 9
+NOT                  : 5
+OR                   : 4
+PLUS                 : 8
+RPAREN               : 6
+TITLE                : 11
+WORD                 : 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+empty                : 10 15
+expression           : 1 3 3 4 4 5 6
+filter               : 0
+qualifier            : 7
+rule                 : 2
+type                 : 7
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . filter
+    (1) filter -> . expression
+    (2) expression -> . rule
+    (3) expression -> . expression AND expression
+    (4) expression -> . expression OR expression
+    (5) expression -> . NOT expression
+    (6) expression -> . LPAREN expression RPAREN
+    (7) rule -> . type qualifier WORD
+    (8) type -> . PLUS
+    (9) type -> . MINUS
+    (10) type -> . empty
+    (16) empty -> .
+
+    NOT             shift and go to state 7
+    LPAREN          shift and go to state 6
+    PLUS            shift and go to state 5
+    MINUS           shift and go to state 3
+    TITLE           reduce using rule 16 (empty -> .)
+    LINK            reduce using rule 16 (empty -> .)
+    AUTHOR          reduce using rule 16 (empty -> .)
+    CONTENT         reduce using rule 16 (empty -> .)
+    WORD            reduce using rule 16 (empty -> .)
+
+    expression                     shift and go to state 8
+    rule                           shift and go to state 2
+    filter                         shift and go to state 4
+    type                           shift and go to state 1
+    empty                          shift and go to state 9
+
+state 1
+
+    (7) rule -> type . qualifier WORD
+    (11) qualifier -> . TITLE
+    (12) qualifier -> . LINK
+    (13) qualifier -> . AUTHOR
+    (14) qualifier -> . CONTENT
+    (15) qualifier -> . empty
+    (16) empty -> .
+
+    TITLE           shift and go to state 12
+    LINK            shift and go to state 14
+    AUTHOR          shift and go to state 11
+    CONTENT         shift and go to state 13
+    WORD            reduce using rule 16 (empty -> .)
+
+    qualifier                      shift and go to state 10
+    empty                          shift and go to state 15
+
+state 2
+
+    (2) expression -> rule .
+
+    AND             reduce using rule 2 (expression -> rule .)
+    OR              reduce using rule 2 (expression -> rule .)
+    $end            reduce using rule 2 (expression -> rule .)
+    RPAREN          reduce using rule 2 (expression -> rule .)
+
+
+state 3
+
+    (9) type -> MINUS .
+
+    TITLE           reduce using rule 9 (type -> MINUS .)
+    LINK            reduce using rule 9 (type -> MINUS .)
+    AUTHOR          reduce using rule 9 (type -> MINUS .)
+    CONTENT         reduce using rule 9 (type -> MINUS .)
+    WORD            reduce using rule 9 (type -> MINUS .)
+
+
+state 4
+
+    (0) S' -> filter .
+
+
+
+state 5
+
+    (8) type -> PLUS .
+
+    TITLE           reduce using rule 8 (type -> PLUS .)
+    LINK            reduce using rule 8 (type -> PLUS .)
+    AUTHOR          reduce using rule 8 (type -> PLUS .)
+    CONTENT         reduce using rule 8 (type -> PLUS .)
+    WORD            reduce using rule 8 (type -> PLUS .)
+
+
+state 6
+
+    (6) expression -> LPAREN . expression RPAREN
+    (2) expression -> . rule
+    (3) expression -> . expression AND expression
+    (4) expression -> . expression OR expression
+    (5) expression -> . NOT expression
+    (6) expression -> . LPAREN expression RPAREN
+    (7) rule -> . type qualifier WORD
+    (8) type -> . PLUS
+    (9) type -> . MINUS
+    (10) type -> . empty
+    (16) empty -> .
+
+    NOT             shift and go to state 7
+    LPAREN          shift and go to state 6
+    PLUS            shift and go to state 5
+    MINUS           shift and go to state 3
+    TITLE           reduce using rule 16 (empty -> .)
+    LINK            reduce using rule 16 (empty -> .)
+    AUTHOR          reduce using rule 16 (empty -> .)
+    CONTENT         reduce using rule 16 (empty -> .)
+    WORD            reduce using rule 16 (empty -> .)
+
+    type                           shift and go to state 1
+    empty                          shift and go to state 9
+    expression                     shift and go to state 16
+    rule                           shift and go to state 2
+
+state 7
+
+    (5) expression -> NOT . expression
+    (2) expression -> . rule
+    (3) expression -> . expression AND expression
+    (4) expression -> . expression OR expression
+    (5) expression -> . NOT expression
+    (6) expression -> . LPAREN expression RPAREN
+    (7) rule -> . type qualifier WORD
+    (8) type -> . PLUS
+    (9) type -> . MINUS
+    (10) type -> . empty
+    (16) empty -> .
+
+    NOT             shift and go to state 7
+    LPAREN          shift and go to state 6
+    PLUS            shift and go to state 5
+    MINUS           shift and go to state 3
+    TITLE           reduce using rule 16 (empty -> .)
+    LINK            reduce using rule 16 (empty -> .)
+    AUTHOR          reduce using rule 16 (empty -> .)
+    CONTENT         reduce using rule 16 (empty -> .)
+    WORD            reduce using rule 16 (empty -> .)
+
+    type                           shift and go to state 1
+    empty                          shift and go to state 9
+    expression                     shift and go to state 17
+    rule                           shift and go to state 2
+
+state 8
+
+    (1) filter -> expression .
+    (3) expression -> expression . AND expression
+    (4) expression -> expression . OR expression
+
+    $end            reduce using rule 1 (filter -> expression .)
+    AND             shift and go to state 18
+    OR              shift and go to state 19
+
+
+state 9
+
+    (10) type -> empty .
+
+    TITLE           reduce using rule 10 (type -> empty .)
+    LINK            reduce using rule 10 (type -> empty .)
+    AUTHOR          reduce using rule 10 (type -> empty .)
+    CONTENT         reduce using rule 10 (type -> empty .)
+    WORD            reduce using rule 10 (type -> empty .)
+
+
+state 10
+
+    (7) rule -> type qualifier . WORD
+
+    WORD            shift and go to state 20
+
+
+state 11
+
+    (13) qualifier -> AUTHOR .
+
+    WORD            reduce using rule 13 (qualifier -> AUTHOR .)
+
+
+state 12
+
+    (11) qualifier -> TITLE .
+
+    WORD            reduce using rule 11 (qualifier -> TITLE .)
+
+
+state 13
+
+    (14) qualifier -> CONTENT .
+
+    WORD            reduce using rule 14 (qualifier -> CONTENT .)
+
+
+state 14
+
+    (12) qualifier -> LINK .
+
+    WORD            reduce using rule 12 (qualifier -> LINK .)
+
+
+state 15
+
+    (15) qualifier -> empty .
+
+    WORD            reduce using rule 15 (qualifier -> empty .)
+
+
+state 16
+
+    (6) expression -> LPAREN expression . RPAREN
+    (3) expression -> expression . AND expression
+    (4) expression -> expression . OR expression
+
+    RPAREN          shift and go to state 21
+    AND             shift and go to state 18
+    OR              shift and go to state 19
+
+
+state 17
+
+    (5) expression -> NOT expression .
+    (3) expression -> expression . AND expression
+    (4) expression -> expression . OR expression
+
+    AND             reduce using rule 5 (expression -> NOT expression .)
+    OR              reduce using rule 5 (expression -> NOT expression .)
+    $end            reduce using rule 5 (expression -> NOT expression .)
+    RPAREN          reduce using rule 5 (expression -> NOT expression .)
+
+  ! AND             [ shift and go to state 18 ]
+  ! OR              [ shift and go to state 19 ]
+
+
+state 18
+
+    (3) expression -> expression AND . expression
+    (2) expression -> . rule
+    (3) expression -> . expression AND expression
+    (4) expression -> . expression OR expression
+    (5) expression -> . NOT expression
+    (6) expression -> . LPAREN expression RPAREN
+    (7) rule -> . type qualifier WORD
+    (8) type -> . PLUS
+    (9) type -> . MINUS
+    (10) type -> . empty
+    (16) empty -> .
+
+    NOT             shift and go to state 7
+    LPAREN          shift and go to state 6
+    PLUS            shift and go to state 5
+    MINUS           shift and go to state 3
+    TITLE           reduce using rule 16 (empty -> .)
+    LINK            reduce using rule 16 (empty -> .)
+    AUTHOR          reduce using rule 16 (empty -> .)
+    CONTENT         reduce using rule 16 (empty -> .)
+    WORD            reduce using rule 16 (empty -> .)
+
+    type                           shift and go to state 1
+    empty                          shift and go to state 9
+    expression                     shift and go to state 22
+    rule                           shift and go to state 2
+
+state 19
+
+    (4) expression -> expression OR . expression
+    (2) expression -> . rule
+    (3) expression -> . expression AND expression
+    (4) expression -> . expression OR expression
+    (5) expression -> . NOT expression
+    (6) expression -> . LPAREN expression RPAREN
+    (7) rule -> . type qualifier WORD
+    (8) type -> . PLUS
+    (9) type -> . MINUS
+    (10) type -> . empty
+    (16) empty -> .
+
+    NOT             shift and go to state 7
+    LPAREN          shift and go to state 6
+    PLUS            shift and go to state 5
+    MINUS           shift and go to state 3
+    TITLE           reduce using rule 16 (empty -> .)
+    LINK            reduce using rule 16 (empty -> .)
+    AUTHOR          reduce using rule 16 (empty -> .)
+    CONTENT         reduce using rule 16 (empty -> .)
+    WORD            reduce using rule 16 (empty -> .)
+
+    type                           shift and go to state 1
+    empty                          shift and go to state 9
+    expression                     shift and go to state 23
+    rule                           shift and go to state 2
+
+state 20
+
+    (7) rule -> type qualifier WORD .
+
+    AND             reduce using rule 7 (rule -> type qualifier WORD .)
+    OR              reduce using rule 7 (rule -> type qualifier WORD .)
+    $end            reduce using rule 7 (rule -> type qualifier WORD .)
+    RPAREN          reduce using rule 7 (rule -> type qualifier WORD .)
+
+
+state 21
+
+    (6) expression -> LPAREN expression RPAREN .
+
+    AND             reduce using rule 6 (expression -> LPAREN expression RPAREN .)
+    OR              reduce using rule 6 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 6 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 6 (expression -> LPAREN expression RPAREN .)
+
+
+state 22
+
+    (3) expression -> expression AND expression .
+    (3) expression -> expression . AND expression
+    (4) expression -> expression . OR expression
+
+    AND             reduce using rule 3 (expression -> expression AND expression .)
+    OR              reduce using rule 3 (expression -> expression AND expression .)
+    $end            reduce using rule 3 (expression -> expression AND expression .)
+    RPAREN          reduce using rule 3 (expression -> expression AND expression .)
+
+  ! AND             [ shift and go to state 18 ]
+  ! OR              [ shift and go to state 19 ]
+
+
+state 23
+
+    (4) expression -> expression OR expression .
+    (3) expression -> expression . AND expression
+    (4) expression -> expression . OR expression
+
+    OR              reduce using rule 4 (expression -> expression OR expression .)
+    $end            reduce using rule 4 (expression -> expression OR expression .)
+    RPAREN          reduce using rule 4 (expression -> expression OR expression .)
+    AND             shift and go to state 18
+
+  ! AND             [ reduce using rule 4 (expression -> expression OR expression .) ]
+  ! OR              [ shift and go to state 19 ]
+
