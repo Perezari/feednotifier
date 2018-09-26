@@ -2,6 +2,8 @@
 Many users meet invalid URL message in popup window.
 Because some of feed engines don't accept custom user-agent such as "FeedNotifier/2.6 +http://www.feednotifier.com/".
 They don't send valid xml as response for feed url.
+A solution is that I change user-agent to browser's user-agent.
+I used user-agent for Chrome.
 ***************************************************************************************************
 
 Feed Notifier is a Windows application that resides in the system tray and 
