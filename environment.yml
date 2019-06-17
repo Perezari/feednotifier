@@ -1,0 +1,12 @@
+name: feednotifier
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.6
+  - pywin32
+  - ply==3.11
+  - pip
+  - pip:
+    - wxpython==4.0.4
+    - feedparser==5.2.1
