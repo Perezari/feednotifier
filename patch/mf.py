@@ -1,7 +1,7 @@
 """Find modules used by a script, using introspection."""
 # This module should be kept compatible with Python 2.2, see PEP 291.
 
-from __future__ import generators
+
 import dis
 import imp
 import marshal
@@ -37,8 +37,9 @@ HAVE_ARGUMENT = chr(dis.HAVE_ARGUMENT)
 # package, and it will be honored.
 
 # Note this is a mapping is lists of paths.
-#~ packagePathMap = {}
+# ~ packagePathMap = {}
 from modulefinder import packagePathMap
+
 
 # A Public interface
 def AddPackagePath(packagename, path):
@@ -46,8 +47,10 @@ def AddPackagePath(packagename, path):
     paths.append(path)
     packagePathMap[packagename] = paths
 
-#~ replacePackageMap = {}
+
+# ~ replacePackageMap = {}
 from modulefinder import replacePackageMap
+
 
 # This ReplacePackage mechanism allows modulefinder to work around the
 # way the _xmlplus package injects itself under the name "xml" into
@@ -82,6 +85,7 @@ class Module:
         s = s + ")"
         return s
 
+
 class ModuleFinder:
 
     def __init__(self, path=None, debug=0, excludes=[], replace_paths=[], skip_scan=[]):
@@ -95,16 +99,16 @@ class ModuleFinder:
         self.excludes = excludes
         self.replace_paths = replace_paths
         self.skip_scan = skip_scan
-        self.processed_paths = []   # Used in debugging only
+        self.processed_paths = []  # Used in debugging only
 
     def msg(self, level, str, *args):
         if level <= self.debug:
             for i in range(self.indent):
-                print "   ",
-            print str,
+                print("   ", end=' ')
+            print(str, end=' ')
             for arg in args:
-                print repr(arg),
-            print
+                print(repr(arg), end=' ')
+            print()
 
     def msgin(self, *args):
         level = args[0]
@@ -148,7 +152,7 @@ class ModuleFinder:
             self.msgout(4, "determine_parent -> None")
             return None
         pname = caller.__name__
-        if level >= 1: # relative import
+        if level >= 1:  # relative import
             if caller.__path__:
                 level -= 1
             if level == 0:
@@ -157,7 +161,7 @@ class ModuleFinder:
                 self.msgout(4, "determine_parent ->", parent)
                 return parent
             if pname.count(".") < level:
-                raise ImportError, "relative importpath too deep"
+                raise ImportError("relative importpath too deep")
             pname = ".".join(pname.split(".")[:-level])
             parent = self.modules[pname]
             self.msgout(4, "determine_parent ->", parent)
@@ -182,7 +186,7 @@ class ModuleFinder:
         if '.' in name:
             i = name.find('.')
             head = name[:i]
-            tail = name[i+1:]
+            tail = name[i + 1:]
         else:
             head = name
             tail = ""
@@ -202,7 +206,7 @@ class ModuleFinder:
                 self.msgout(4, "find_head_package ->", (q, tail))
                 return q, tail
         self.msgout(4, "raise ImportError: No module named", qname)
-        raise ImportError, "No module named " + qname
+        raise ImportError("No module named " + qname)
 
     def load_tail(self, q, tail):
         self.msgin(4, "load_tail", q, tail)
@@ -210,12 +214,12 @@ class ModuleFinder:
         while tail:
             i = tail.find('.')
             if i < 0: i = len(tail)
-            head, tail = tail[:i], tail[i+1:]
+            head, tail = tail[:i], tail[i + 1:]
             mname = "%s.%s" % (m.__name__, head)
             m = self.import_module(head, mname, m)
             if not m:
                 self.msgout(4, "raise ImportError: No module named", mname)
-                raise ImportError, "No module named " + mname
+                raise ImportError("No module named " + mname)
         self.msgout(4, "load_tail ->", m)
         return m
 
@@ -231,7 +235,7 @@ class ModuleFinder:
                 subname = "%s.%s" % (m.__name__, sub)
                 submod = self.import_module(sub, subname, m)
                 if not submod:
-                    raise ImportError, "No module named " + subname
+                    raise ImportError("No module named " + subname)
 
     def find_all_submodules(self, m):
         if not m.__path__:
@@ -258,7 +262,7 @@ class ModuleFinder:
                         break
                 if mod and mod != "__init__":
                     modules[mod] = mod
-        return modules.keys()
+        return list(modules.keys())
 
     def import_module(self, partname, fqname, parent):
         self.msgin(3, "import_module", partname, fqname, parent)
@@ -269,7 +273,7 @@ class ModuleFinder:
         else:
             self.msgout(3, "import_module ->", m)
             return m
-        if self.badmodules.has_key(fqname):
+        if fqname in self.badmodules:
             self.msgout(3, "import_module -> None")
             return None
         if parent and parent.__path__ is None:
@@ -290,18 +294,19 @@ class ModuleFinder:
         self.msgout(3, "import_module ->", m)
         return m
 
-    def load_module(self, fqname, fp, pathname, (suffix, mode, type)):
+    def load_module(self, fqname, fp, pathname, xxx_todo_changeme):
+        (suffix, mode, type) = xxx_todo_changeme
         self.msgin(2, "load_module", fqname, fp and "fp", pathname)
         if type == imp.PKG_DIRECTORY:
             m = self.load_package(fqname, pathname)
             self.msgout(2, "load_module ->", m)
             return m
         if type == imp.PY_SOURCE:
-            co = compile(fp.read()+'\n', pathname, 'exec')
+            co = compile(fp.read() + '\n', pathname, 'exec')
         elif type == imp.PY_COMPILED:
             if fp.read(4) != imp.get_magic():
                 self.msgout(2, "raise ImportError: Bad magic number", pathname)
-                raise ImportError, "Bad magic number in %s" % pathname
+                raise ImportError("Bad magic number in %s" % pathname)
             fp.read(4)
             co = marshal.load(fp)
         else:
@@ -331,7 +336,7 @@ class ModuleFinder:
             return
         try:
             self.import_hook(name, caller, level=level)
-        except ImportError, msg:
+        except ImportError as msg:
             self.msg(2, "ImportError:", str(msg))
             self._add_badmodule(name, caller)
         else:
@@ -342,13 +347,13 @@ class ModuleFinder:
                         continue
                     try:
                         self.import_hook(name, caller, [sub], level=level)
-                    except ImportError, msg:
+                    except ImportError as msg:
                         self.msg(2, "ImportError:", str(msg))
                         fullname = name + "." + sub
                         self._add_badmodule(fullname, caller)
 
     def scan_opcodes(self, co,
-                     unpack = struct.unpack):
+                     unpack=struct.unpack):
         # Scan the code, and yield 'interesting' opcode combinations
         # Version for Python 2.4 and older
         code = co.co_code
@@ -372,7 +377,7 @@ class ModuleFinder:
                 code = code[1:]
 
     def scan_opcodes_25(self, co,
-                     unpack = struct.unpack):
+                        unpack=struct.unpack):
         # Scan the code, and yield 'interesting' opcode combinations
         # Python 2.5 version (has absolute and relative imports)
         code = co.co_code
@@ -389,11 +394,11 @@ class ModuleFinder:
             if code[:9:3] == LOAD_LOAD_AND_IMPORT:
                 oparg_1, oparg_2, oparg_3 = unpack('<xHxHxH', code[:9])
                 level = consts[oparg_1]
-                if level == -1: # normal import
+                if level == -1:  # normal import
                     yield "import", (consts[oparg_2], names[oparg_3])
-                elif level == 0: # absolute import
+                elif level == 0:  # absolute import
                     yield "absolute_import", (consts[oparg_2], names[oparg_3])
-                else: # relative import
+                else:  # relative import
                     yield "relative_import", (level, consts[oparg_2], names[oparg_3])
                 code = code[9:]
                 continue
@@ -421,8 +426,10 @@ class ModuleFinder:
                     if "*" in fromlist:
                         have_star = 1
                     fromlist = [f for f in fromlist if f != "*"]
-                if what == "absolute_import": level = 0
-                else: level = -1
+                if what == "absolute_import":
+                    level = 0
+                else:
+                    level = -1
                 self._safe_import_hook(name, m, fromlist, level=level)
                 if have_star:
                     # We've encountered an "import *". If it is a Python module,
@@ -476,7 +483,7 @@ class ModuleFinder:
         return m
 
     def add_module(self, fqname):
-        if self.modules.has_key(fqname):
+        if fqname in self.modules:
             return self.modules[fqname]
         self.modules[fqname] = m = Module(fqname)
         return m
@@ -484,12 +491,12 @@ class ModuleFinder:
     def find_module(self, name, path, parent=None):
         if parent is not None:
             # assert path is not None
-            fullname = parent.__name__+'.'+name
+            fullname = parent.__name__ + '.' + name
         else:
             fullname = name
         if fullname in self.excludes:
             self.msgout(3, "find_module -> Excluded", fullname)
-            raise ImportError, name
+            raise ImportError(name)
 
         if path is None:
             if name in sys.builtin_module_names:
@@ -502,38 +509,38 @@ class ModuleFinder:
         """Print a report to stdout, listing the found modules with their
         paths, as well as modules that are missing, or seem to be missing.
         """
-        print
-        print "  %-25s %s" % ("Name", "File")
-        print "  %-25s %s" % ("----", "----")
+        print()
+        print("  %-25s %s" % ("Name", "File"))
+        print("  %-25s %s" % ("----", "----"))
         # Print modules found
-        keys = self.modules.keys()
+        keys = list(self.modules.keys())
         keys.sort()
         for key in keys:
             m = self.modules[key]
             if m.__path__:
-                print "P",
+                print("P", end=' ')
             else:
-                print "m",
-            print "%-25s" % key, m.__file__ or ""
+                print("m", end=' ')
+            print("%-25s" % key, m.__file__ or "")
 
         # Print missing modules
         missing, maybe = self.any_missing_maybe()
         if missing:
-            print
-            print "Missing modules:"
+            print()
+            print("Missing modules:")
             for name in missing:
-                mods = self.badmodules[name].keys()
+                mods = list(self.badmodules[name].keys())
                 mods.sort()
-                print "?", name, "imported from", ', '.join(mods)
+                print("?", name, "imported from", ', '.join(mods))
         # Print modules that may be missing, but then again, maybe not...
         if maybe:
-            print
-            print "Submodules thay appear to be missing, but could also be",
-            print "global names in the parent package:"
+            print()
+            print("Submodules thay appear to be missing, but could also be", end=' ')
+            print("global names in the parent package:")
             for name in maybe:
-                mods = self.badmodules[name].keys()
+                mods = list(self.badmodules[name].keys())
                 mods.sort()
-                print "?", name, "imported from", ', '.join(mods)
+                print("?", name, "imported from", ', '.join(mods))
 
     def any_missing(self):
         """Return a list of modules that appear to be missing. Use
@@ -561,7 +568,7 @@ class ModuleFinder:
             if i < 0:
                 missing.append(name)
                 continue
-            subname = name[i+1:]
+            subname = name[i + 1:]
             pkgname = name[:i]
             pkg = self.modules.get(pkgname)
             if pkg is not None:
@@ -599,10 +606,10 @@ class ModuleFinder:
         if self.debug and original_filename not in self.processed_paths:
             if new_filename != original_filename:
                 self.msgout(2, "co_filename %r changed to %r" \
-                                    % (original_filename,new_filename,))
+                            % (original_filename, new_filename,))
             else:
                 self.msgout(2, "co_filename %r remains unchanged" \
-                                    % (original_filename,))
+                            % (original_filename,))
             self.processed_paths.append(original_filename)
 
         consts = list(co.co_consts)
@@ -611,10 +618,10 @@ class ModuleFinder:
                 consts[i] = self.replace_paths_in_code(consts[i])
 
         return types.CodeType(co.co_argcount, co.co_nlocals, co.co_stacksize,
-                         co.co_flags, co.co_code, tuple(consts), co.co_names,
-                         co.co_varnames, new_filename, co.co_name,
-                         co.co_firstlineno, co.co_lnotab,
-                         co.co_freevars, co.co_cellvars)
+                              co.co_flags, co.co_code, tuple(consts), co.co_names,
+                              co.co_varnames, new_filename, co.co_name,
+                              co.co_firstlineno, co.co_lnotab,
+                              co.co_freevars, co.co_cellvars)
 
 
 def test():
@@ -622,8 +629,8 @@ def test():
     import getopt
     try:
         opts, args = getopt.getopt(sys.argv[1:], "dmp:qx:")
-    except getopt.error, msg:
-        print msg
+    except getopt.error as msg:
+        print(msg)
         return
 
     # Process options
@@ -654,9 +661,9 @@ def test():
     path[0] = os.path.dirname(script)
     path = addpath + path
     if debug > 1:
-        print "path:"
+        print("path:")
         for item in path:
-            print "   ", repr(item)
+            print("   ", repr(item))
 
     # Create the module finder and turn its crank
     mf = ModuleFinder(path, debug, exclude)
@@ -680,15 +687,13 @@ if __name__ == '__main__':
     try:
         mf = test()
     except KeyboardInterrupt:
-        print "\n[interrupt]"
-
-
+        print("\n[interrupt]")
 
 # py2exe specific portion - this should be removed before inclusion in the
 # Python distribution
 
 import tempfile
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 try:
     set
@@ -697,6 +702,7 @@ except NameError:
 
 Base = ModuleFinder
 del ModuleFinder
+
 
 # Much inspired by Toby Dickenson's code:
 # http://www.tarind.com/depgraph.html
@@ -719,17 +725,18 @@ class ModuleFinder(Base):
         old_last_caller = self._last_caller
         try:
             self._last_caller = caller
-            return Base.import_hook(self,name,caller,fromlist,level)
+            return Base.import_hook(self, name, caller, fromlist, level)
         finally:
             self._last_caller = old_last_caller
 
-    def import_module(self,partnam,fqname,parent):
-        r = Base.import_module(self,partnam,fqname,parent)
+    def import_module(self, partnam, fqname, parent):
+        r = Base.import_module(self, partnam, fqname, parent)
         if r is not None and self._last_caller:
             self._depgraph.setdefault(self._last_caller.__name__, set()).add(r.__name__)
         return r
 
-    def load_module(self, fqname, fp, pathname, (suffix, mode, typ)):
+    def load_module(self, fqname, fp, pathname, xxx_todo_changeme1):
+        (suffix, mode, typ) = xxx_todo_changeme1
         r = Base.load_module(self, fqname, fp, pathname, (suffix, mode, typ))
         if r is not None:
             self._types[r.__name__] = typ
@@ -739,59 +746,59 @@ class ModuleFinder(Base):
         # this code probably needs cleanup
         depgraph = {}
         importedby = {}
-        for name, value in self._depgraph.items():
+        for name, value in list(self._depgraph.items()):
             depgraph[name] = list(value)
             for needs in value:
                 importedby.setdefault(needs, set()).add(name)
 
-        names = self._types.keys()
+        names = list(self._types.keys())
         names.sort()
 
         fd, htmlfile = tempfile.mkstemp(".html")
         ofi = open(htmlfile, "w")
         os.close(fd)
-        print >> ofi, "<html><title>py2exe cross reference for %s</title><body>" % sys.argv[0]
+        print("<html><title>py2exe cross reference for %s</title><body>" % sys.argv[0], file=ofi)
 
-        print >> ofi, "<h1>py2exe cross reference for %s</h1>" % sys.argv[0]
+        print("<h1>py2exe cross reference for %s</h1>" % sys.argv[0], file=ofi)
 
         for name in names:
             if self._types[name] in (imp.PY_SOURCE, imp.PKG_DIRECTORY):
-                print >> ofi, '<a name="%s"><b><tt>%s</tt></b></a>' % (name, name)
+                print('<a name="%s"><b><tt>%s</tt></b></a>' % (name, name), file=ofi)
                 if name == "__main__":
                     for fname in self._scripts:
-                        path = urllib.pathname2url(os.path.abspath(fname))
-                        print >> ofi, '<a target="code" href="%s" type="text/plain"><tt>%s</tt></a> ' \
-                              % (path, fname)
-                    print >> ofi, '<br>imports:'
+                        path = urllib.request.pathname2url(os.path.abspath(fname))
+                        print('<a target="code" href="%s" type="text/plain"><tt>%s</tt></a> ' \
+                              % (path, fname), file=ofi)
+                    print('<br>imports:', file=ofi)
                 else:
-                    fname = urllib.pathname2url(self.modules[name].__file__)
-                    print >> ofi, '<a target="code" href="%s" type="text/plain"><tt>%s</tt></a><br>imports:' \
-                          % (fname, self.modules[name].__file__)
+                    fname = urllib.request.pathname2url(self.modules[name].__file__)
+                    print('<a target="code" href="%s" type="text/plain"><tt>%s</tt></a><br>imports:' \
+                          % (fname, self.modules[name].__file__), file=ofi)
             else:
                 fname = self.modules[name].__file__
                 if fname:
-                    print >> ofi, '<a name="%s"><b><tt>%s</tt></b></a> <tt>%s</tt><br>imports:' \
-                          % (name, name, fname)
+                    print('<a name="%s"><b><tt>%s</tt></b></a> <tt>%s</tt><br>imports:' \
+                          % (name, name, fname), file=ofi)
                 else:
-                    print >> ofi, '<a name="%s"><b><tt>%s</tt></b></a> <i>%s</i><br>imports:' \
-                          % (name, name, TYPES[self._types[name]])
+                    print('<a name="%s"><b><tt>%s</tt></b></a> <i>%s</i><br>imports:' \
+                          % (name, name, TYPES[self._types[name]]), file=ofi)
 
             if name in depgraph:
                 needs = depgraph[name]
                 for n in needs:
-                    print >>  ofi, '<a href="#%s"><tt>%s</tt></a> ' % (n, n)
-            print >> ofi, "<br>\n"
+                    print('<a href="#%s"><tt>%s</tt></a> ' % (n, n), file=ofi)
+            print("<br>\n", file=ofi)
 
-            print >> ofi, 'imported by:'
+            print('imported by:', file=ofi)
             if name in importedby:
                 for i in importedby[name]:
-                    print >> ofi, '<a href="#%s"><tt>%s</tt></a> ' % (i, i)
+                    print('<a href="#%s"><tt>%s</tt></a> ' % (i, i), file=ofi)
 
-            print >> ofi, "<br>\n"
+            print("<br>\n", file=ofi)
 
-            print >> ofi, "<br>\n"
+            print("<br>\n", file=ofi)
 
-        print >> ofi, "</body></html>"
+        print("</body></html>", file=ofi)
         ofi.close()
         os.startfile(htmlfile)
         # how long does it take to start the browser?

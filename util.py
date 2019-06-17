@@ -4,13 +4,14 @@ import re
 import time
 import base64
 import calendar
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import threading
 import feedparser
-from htmlentitydefs import name2codepoint
+from html.entities import name2codepoint
 from settings import settings
 import ssl
+
 
 def set_icon(window):
     bundle = wx.IconBundle()
@@ -20,13 +21,15 @@ def set_icon(window):
     bundle.AddIcon(wx.Icon('icons/48.png', wx.BITMAP_TYPE_PNG))
     bundle.AddIcon(wx.Icon('icons/256.png', wx.BITMAP_TYPE_PNG))
     window.SetIcons(bundle)
-    
+
+
 def start_thread(func, *args):
     thread = threading.Thread(target=func, args=args)
     thread.setDaemon(True)
     thread.start()
     return thread
-    
+
+
 def scale_bitmap(bitmap, width, height, color):
     bw, bh = bitmap.GetWidth(), bitmap.GetHeight()
     if bw == width and bh == height:
@@ -44,39 +47,45 @@ def scale_bitmap(bitmap, width, height, color):
     image = image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
     result = wx.BitmapFromImage(image)
     return result
-    
+
+
 def menu_item(menu, label, func, icon=None, kind=wx.ITEM_NORMAL):
     item = wx.MenuItem(menu, -1, label, kind=kind)
     if func:
         menu.Bind(wx.EVT_MENU, func, id=item.GetId())
     if icon:
         item.SetBitmap(wx.Bitmap(icon))
-    menu.AppendItem(item)
+    menu.Append(item)
     return item
-    
+
+
 def select_choice(choice, data):
     for index in range(choice.GetCount()):
         if choice.GetClientData(index) == data:
             choice.Select(index)
             return
     choice.Select(wx.NOT_FOUND)
-    
+
+
 def get_top_window(window):
     result = None
     while window:
         result = window
         window = window.GetParent()
     return result
-    
+
+
 def get(obj, key, default):
     value = obj.get(key, None)
     return value or default
-    
+
+
 def abspath(path):
     path = os.path.abspath(path)
     path = 'file:///%s' % path.replace('\\', '/')
     return path
-    
+
+
 def parse(url, username=None, password=None, etag=None, modified=None):
     agent = settings.USER_AGENT
     handlers = [get_proxy()]
@@ -85,32 +94,37 @@ def parse(url, username=None, password=None, etag=None, modified=None):
     if hasattr(ssl, '_create_unverified_context'):
         ssl._create_default_https_context = ssl._create_unverified_context
     return feedparser.parse(url, etag=etag, modified=modified, agent=agent, handlers=handlers)
-    
+
+
 def is_valid_feed(data):
     entries = get(data, 'entries', [])
     title = get(data.feed, 'title', '')
     link = get(data.feed, 'link', '')
     return entries or title or link
-    
+
+
 def insert_credentials(url, username, password):
-    parts = urlparse.urlsplit(url)
+    parts = urllib.parse.urlsplit(url)
     netloc = parts.netloc
     if '@' in netloc:
-        netloc = netloc[netloc.index('@')+1:]
+        netloc = netloc[netloc.index('@') + 1:]
     netloc = '%s:%s@%s' % (username, password, netloc)
     parts = list(parts)
     parts[1] = netloc
-    return urlparse.urlunsplit(tuple(parts))
-    
+    return urllib.parse.urlunsplit(tuple(parts))
+
+
 def encode_password(password):
     return base64.b64encode(password) if password else None
-    
+
+
 def decode_password(password):
     try:
         return base64.b64decode(password) if password else None
     except Exception:
         return None
-        
+
+
 def get_proxy():
     if settings.USE_PROXY:
         url = decode_password(settings.PROXY_URL)
@@ -120,17 +134,18 @@ def get_proxy():
                 'http': url,
                 'https': url,
             }
-            proxy = urllib2.ProxyHandler(map)
+            proxy = urllib.request.ProxyHandler(map)
         else:
             # Windows-configured Proxy
-            proxy = urllib2.ProxyHandler()
+            proxy = urllib.request.ProxyHandler()
     else:
         # No Proxy
-        proxy = urllib2.ProxyHandler({})
+        proxy = urllib.request.ProxyHandler({})
     return proxy
-    
+
+
 def find_themes():
-    return ['default'] # TODO: more themes!
+    return ['default']  # TODO: more themes!
     result = []
     names = os.listdir('themes')
     for name in names:
@@ -140,7 +155,8 @@ def find_themes():
         if os.path.isdir(path):
             result.append(name)
     return result
-    
+
+
 def guess_polling_interval(entries):
     if len(entries) < 2:
         return settings.DEFAULT_POLLING_INTERVAL
@@ -153,16 +169,16 @@ def guess_polling_interval(entries):
     mean = sum(durations) / len(durations)
     choices = [
         60,
-        60*5,
-        60*10,
-        60*15,
-        60*30,
-        60*60,
-        60*60*2,
-        60*60*4,
-        60*60*8,
-        60*60*12,
-        60*60*24,
+        60 * 5,
+        60 * 10,
+        60 * 15,
+        60 * 30,
+        60 * 60,
+        60 * 60 * 2,
+        60 * 60 * 4,
+        60 * 60 * 8,
+        60 * 60 * 12,
+        60 * 60 * 24,
     ]
     desired = mean / 2
     if desired == 0:
@@ -172,7 +188,8 @@ def guess_polling_interval(entries):
     else:
         interval = max(choice for choice in choices if choice <= desired)
     return interval
-    
+
+
 def time_since(t):
     t = int(t)
     now = int(time.time())
@@ -195,7 +212,8 @@ def time_since(t):
     if days == 1:
         return '1 day'
     return '%d days' % days
-    
+
+
 def split_time(seconds):
     if seconds < 60:
         return seconds, 0
@@ -207,7 +225,8 @@ def split_time(seconds):
     if days and hours % 24 == 0:
         return days, 3
     return hours, 2
-    
+
+
 def split_time_str(seconds):
     interval, units = split_time(seconds)
     strings = ['second', 'minute', 'hour', 'day']
@@ -215,7 +234,8 @@ def split_time_str(seconds):
     if interval != 1:
         string += 's'
     return '%d %s' % (interval, string)
-    
+
+
 def pretty_name(name):
     name = ' '.join(s.title() for s in name.split('_'))
     last = '0'
@@ -226,29 +246,37 @@ def pretty_name(name):
         result += c
         last = c
     return result
-    
+
+
 def replace_entities1(text):
     entity = re.compile(r'&#(\d+);')
+
     def func(match):
         try:
-            return unichr(int(match.group(1)))
+            return chr(int(match.group(1)))
         except Exception:
             return match.group(0)
+
     return entity.sub(func, text)
-    
+
+
 def replace_entities2(text):
     entity = re.compile(r'&([a-zA-Z]+);')
+
     def func(match):
         try:
-            return unichr(name2codepoint[match.group(1)])
+            return chr(name2codepoint[match.group(1)])
         except Exception:
             return match.group(0)
+
     return entity.sub(func, text)
-    
+
+
 def remove_markup(text):
     html = re.compile(r'<[^>]+>')
     return html.sub(' ', text)
-    
+
+
 def format(text, max_length=400):
     previous = ''
     while text != previous:
@@ -263,4 +291,3 @@ def format(text, max_length=400):
         text.append('[...]')
         text = ' '.join(text)
     return text
-    

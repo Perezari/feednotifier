@@ -2,18 +2,22 @@ import wx
 import sys
 import util
 
+
 class CallbackContainer(object):
     def __init__(self):
         self.callback = None
+
     def __call__(self, message):
         if self.callback:
             wx.CallAfter(self.callback, message)
-            
+
+
 if sys.platform == 'win32':
     import win32file
     import win32pipe
     import time
-    
+
+
     def init():
         container = CallbackContainer()
         message = '\n'.join(sys.argv[1:])
@@ -23,7 +27,8 @@ if sys.platform == 'win32':
         else:
             util.start_thread(server, name, container)
             return container, message
-            
+
+
     def server(name, callback_func):
         buffer = 4096
         timeout = 1000
@@ -58,7 +63,8 @@ if sys.platform == 'win32':
             finally:
                 win32pipe.DisconnectNamedPipe(handle)
                 win32file.CloseHandle(handle)
-                
+
+
     def client(name, message):
         try:
             file = open(name, 'wb')
@@ -70,8 +76,9 @@ if sys.platform == 'win32':
 else:
     import functools
     import socket
-    import SocketServer
-    
+    import socketserver
+
+
     def init():
         container = CallbackContainer()
         message = '\n'.join(sys.argv[1:])
@@ -82,21 +89,24 @@ else:
         except socket.error:
             client(host, port, message)
         return None, message
-        
+
+
     def server(host, port, callback_func):
-        class Handler(SocketServer.StreamRequestHandler):
+        class Handler(socketserver.StreamRequestHandler):
             def __init__(self, callback_func, *args, **kwargs):
                 self.callback_func = callback_func
-                SocketServer.StreamRequestHandler.__init__(self, *args, **kwargs)
+                socketserver.StreamRequestHandler.__init__(self, *args, **kwargs)
+
             def handle(self):
                 data = self.rfile.readline().strip()
                 self.callback_func(data)
-        server = SocketServer.TCPServer((host, port), functools.partial(Handler, callback_func))
+
+        server = socketserver.TCPServer((host, port), functools.partial(Handler, callback_func))
         util.start_thread(server.serve_forever)
-        
+
+
     def client(host, port, message):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((host, port))
         sock.send(message)
         sock.close()
-        

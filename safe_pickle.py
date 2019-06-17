@@ -1,5 +1,6 @@
 import os
-import cPickle as pickle
+import pickle as pickle
+
 
 def load(path):
     tmp_path = '%s.tmp' % path
@@ -11,7 +12,8 @@ def load(path):
         except Exception:
             pass
     raise Exception('Unable to load: %s' % path)
-    
+
+
 def save(path, data):
     tmp_path = '%s.tmp' % path
     bak_path = '%s.bak' % path
@@ -34,4 +36,3 @@ def save(path, data):
         os.remove(bak_path)
     except Exception:
         pass
-        

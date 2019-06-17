@@ -5,3 +5,5 @@ log.txt
 settings.dat
 .idea
 *.pyc
+main.build
+main.dist
