@@ -3,13 +3,13 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
+a = Analysis(['src/main.py'],
              pathex=['P:\\feednotifier'],
              binaries=[],
              datas=[
-                ('icons/*', 'icons'),
-                ('themes/*', 'themes'),
-                ('sounds/*', 'sounds')
+                ('src/icons/*', 'icons'),
+                ('src/themes/*', 'themes'),
+                ('src/sounds/*', 'sounds')
              ],
              hiddenimports=[],
              hookspath=[],
@@ -31,6 +31,14 @@ exe = EXE(pyz,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
-          upx=True,
+          upx=False,
           runtime_tmpdir=None,
-          console=True )
+          console=True
+          )
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=False,
+               name='main')

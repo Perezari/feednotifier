@@ -1,5 +1,7 @@
 import wx
-import controls, popups, util
+import controls
+import popups
+import util
 from settings import settings
 
 BACKGROUND = (230, 230, 230)
@@ -253,7 +255,7 @@ class Frame(wx.Frame):
 
 
 if __name__ == '__main__':
-    app = wx.PySimpleApp()
+    app = wx.App()
     frame = Frame()
     frame.Show()
     app.MainLoop()

@@ -14,7 +14,7 @@ COMMAND_PAUSE = 'http://pause/'
 
 def position_window(window):
     index = settings.POPUP_DISPLAY
-    if index >= wx.Display_GetCount():
+    if index >= wx.Display.GetCount():
         index = 0
     display = wx.Display(index)
     x, y, w, h = display.GetClientArea()
@@ -52,6 +52,9 @@ EVT_POPUP_LEAVE = wx.PyEventBinder(wx.NewEventType())
 class PopupManager(wx.EvtHandler):
     def __init__(self):
         super(PopupManager, self).__init__()
+        self.items = None
+        self.index = None
+        self.count = None
         self.timer = None
         self.auto = settings.POPUP_AUTO_PLAY
         self.cache = {}
@@ -83,7 +86,7 @@ class PopupManager(wx.EvtHandler):
             indexes.add(self.index + 1)
             # indexes.add(0)
             # indexes.add(self.count - 1)
-        items = set(self.items[index] for index in indexes if index >= 0 and index < self.count)
+        items = set(self.items[index] for index in indexes if 0 <= index < self.count)
         for item in items:
             if item in self.cache:
                 continue

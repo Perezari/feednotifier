@@ -782,7 +782,6 @@ class SettingsDialog(wx.Dialog):
         images.Add(util.scale_bitmap(wx.Bitmap('icons/filter32.png'), -1, -1, self.GetBackgroundColour()))
         images.Add(util.scale_bitmap(wx.Bitmap('icons/info32.png'), -1, -1, self.GetBackgroundColour()))
         notebook = wx.Toolbook(parent, -1)
-        # notebook.SetInternalBorder(0)  TODO: commented for compatibility
         notebook.AssignImageList(images)
         feeds = FeedsPanel(notebook, self)
         popups = PopupsPanel(notebook, self)

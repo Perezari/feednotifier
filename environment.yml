@@ -10,3 +10,4 @@ dependencies:
   - pip:
     - wxpython==4.0.4
     - feedparser==5.2.1
+    - pyinstaller

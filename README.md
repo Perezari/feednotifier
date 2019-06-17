@@ -32,8 +32,9 @@ with most news readers.
 * [x] Code python 3.6 compatible
 * [x] Conda environment file with dependencies
 * [x] Run instructions
-* [ ] Replace py2exe by nuitka, cx_freeze or pyinstaller 
-* [ ] Build instructions
+* [x] Replace py2exe by pyinstaller 
+* [x] Build instructions
+* [ ] Make popups working again in Win 10
 * [ ] Resolve all build dependencies
 * [ ] Make it work with my custom feeds
 * [ ] Ability to preload configuration from .ini
@@ -54,6 +55,17 @@ conda activate feednotifier
 python main.py
 ```
 
+### Building instructions
+
+```shell
+cd feednotifier
+pyinstaller build.spec
+.\dist\main\main.exe
+```
+
+### Testing with RSS feeds
+
+> http://lorem-rss.herokuapp.com/feed?unit=second
 
 ### The URL entered does not appear to be a valid RSS/Atom feed
 
